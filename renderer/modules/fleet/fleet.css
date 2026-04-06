@@ -1,0 +1,486 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Fleet Module — Enterprise Line Cards (Redesigned)
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* ── Card Shell ── */
+.line-card {
+  transition: border-color 0.3s, box-shadow 0.3s;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.line-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #393939;
+  transition: background 0.3s;
+  z-index: 1;
+}
+
+.line-card.running::before {
+  background: linear-gradient(90deg, #24a148, #42be65);
+}
+
+.line-card.running {
+  border-color: rgba(36, 161, 72, 0.30) !important;
+}
+
+.line-card.running:hover {
+  border-color: rgba(36, 161, 72, 0.50) !important;
+  box-shadow: 0 0 24px rgba(36, 161, 72, 0.08);
+}
+
+.line-card.idle {
+  border-color: #393939 !important;
+}
+
+.line-card.idle:hover {
+  border-color: #525252 !important;
+}
+
+
+/* ── Card Header ── */
+.lc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #393939;
+}
+
+.lc-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.lc-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #1f1f1f;
+  border: 1px solid #393939;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.lc-header-icon i {
+  font-size: 14px;
+  color: #c6c6c6;
+}
+
+.line-card.running .lc-header-icon {
+  background: rgba(36, 161, 72, 0.10);
+  border-color: rgba(36, 161, 72, 0.25);
+}
+
+.line-card.running .lc-header-icon i {
+  color: #42be65;
+}
+
+.lc-header-text {
+  min-width: 0;
+}
+
+.lc-ws-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: #f4f4f4;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-ws-sub {
+  font-size: 10px;
+  color: #6f6f6f;
+  line-height: 1.2;
+  margin-top: 2px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.lc-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+
+/* ── Card Body ── */
+.lc-body {
+  padding: 14px 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+
+/* ── Stats Grid ── */
+.lc-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.lc-stat {
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+  padding: 8px 6px;
+  text-align: center;
+}
+
+.lc-stat-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #525252;
+  margin-bottom: 2px;
+  font-weight: 600;
+}
+
+.lc-stat-value {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1;
+}
+
+
+/* ── Image / OTA Row ── */
+.lc-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: #161616;
+  border: 1px solid #2a2a2a;
+  border-radius: 6px;
+}
+
+.lc-meta-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.lc-meta-item-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #525252;
+  font-weight: 600;
+  margin-bottom: 1px;
+}
+
+.lc-meta-item-value {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  color: #c6c6c6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lc-meta-sep {
+  width: 1px;
+  height: 24px;
+  background: #2a2a2a;
+  flex-shrink: 0;
+}
+
+
+/* ── Part Name Pill ── */
+.lc-part-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(69, 137, 255, 0.05);
+  border: 1px solid rgba(69, 137, 255, 0.12);
+}
+
+.lc-part-pill-label {
+  font-size: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #525252;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.lc-part-pill-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #78a9ff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+/* ── License Info Row ── */
+.lc-license-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid #2a2a2a;
+  font-size: 10px;
+}
+
+
+/* ── Card Footer (Controls) ── */
+.lc-footer {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border-top: 1px solid #393939;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.lc-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lc-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lc-btn i {
+  font-size: 14px;
+}
+
+.lc-btn.start {
+  background: rgba(36, 161, 72, 0.10);
+  border-color: rgba(36, 161, 72, 0.30);
+  color: #42be65;
+  flex: 1;
+}
+
+.lc-btn.start:hover:not(:disabled) {
+  background: rgba(36, 161, 72, 0.20);
+  border-color: rgba(36, 161, 72, 0.45);
+}
+
+.lc-btn.stop {
+  background: rgba(218, 30, 40, 0.10);
+  border-color: rgba(218, 30, 40, 0.30);
+  color: #fa4d56;
+  flex: 1;
+}
+
+.lc-btn.stop:hover:not(:disabled) {
+  background: rgba(218, 30, 40, 0.20);
+  border-color: rgba(218, 30, 40, 0.45);
+}
+
+.lc-btn.restart {
+  background: rgba(241, 194, 27, 0.08);
+  border-color: rgba(241, 194, 27, 0.25);
+  color: #f1c21b;
+  flex: 1;
+}
+
+.lc-btn.restart:hover:not(:disabled) {
+  background: rgba(241, 194, 27, 0.18);
+  border-color: rgba(241, 194, 27, 0.40);
+}
+
+
+/* ── Actions Dropdown ── */
+.lc-actions-wrap {
+  position: relative;
+}
+
+.lc-actions-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  border: 1px solid #393939;
+  background: #1f1f1f;
+  color: #c6c6c6;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 16px;
+}
+
+.lc-actions-trigger:hover {
+  background: #353535;
+  color: #f4f4f4;
+  border-color: #525252;
+}
+
+.lc-actions-menu {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: #1f1f1f;
+  border: 1px solid #393939;
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.50);
+  overflow: hidden;
+  z-index: 50;
+  animation: dropdown-appear 0.15s ease-out;
+}
+
+.lc-actions-menu.open {
+  display: block;
+}
+
+@keyframes dropdown-appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lc-action-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #c6c6c6;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+}
+
+.lc-action-item:hover {
+  background: #262626;
+  color: #f4f4f4;
+}
+
+.lc-action-item i {
+  font-size: 14px;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.lc-action-item.danger {
+  color: #fa4d56;
+}
+
+.lc-action-item.danger:hover {
+  background: rgba(218, 30, 40, 0.10);
+}
+
+.lc-action-sep {
+  height: 1px;
+  background: #393939;
+  margin: 2px 0;
+}
+
+
+/* ── Alert Banners inside card ── */
+.lc-banners {
+  padding: 12px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lc-banners:empty {
+  display: none;
+  padding: 0;
+}
+
+
+
+/* ── Vitals Modal Layout ── */
+.vitals-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.vitals-wide {
+  grid-column: 1 / -1;
+}
+
+.vitals-stat {
+  background: #1f1f1f;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.vitals-stat-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6f6f6f;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.vitals-stat-value {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: capitalize;
+}
+
+
+/* ── Delete Modal ── */
+.delete-modal-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(218, 30, 40, 0.10);
+  border: 1px solid rgba(218, 30, 40, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.delete-modal-icon i {
+  font-size: 24px;
+  color: #fa4d56;
+}

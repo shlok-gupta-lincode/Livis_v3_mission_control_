@@ -1,0 +1,71 @@
+/* ══════════════════════════════════════════════════════════════════════
+   Activation Module — Styles
+   ══════════════════════════════════════════════════════════════════════ */
+
+.activation-page {
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px 64px;
+  position: relative;
+}
+
+.activation-bg { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+.activation-bg .grid-dots {
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.activation-bg .scan-line {
+  position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(15,98,254,0.5) 30%, rgba(69,137,255,0.6) 50%, rgba(15,98,254,0.5) 70%, transparent 100%);
+  animation: scan-down 5s linear infinite;
+  pointer-events: none;
+}
+.activation-bg .orb {
+  position: absolute; border-radius: 50%;
+}
+.activation-bg .orb-1 { width: 520px; height: 520px; background: rgba(15,98,254,0.07); filter: blur(130px); top: 5%; left: 0; animation: float-orb-1 12s ease-in-out infinite; }
+.activation-bg .orb-2 { width: 420px; height: 420px; background: rgba(69,137,255,0.06); filter: blur(110px); bottom: 10%; right: 5%; animation: float-orb-2 16s ease-in-out infinite; }
+.activation-bg .orb-3 { width: 260px; height: 260px; background: rgba(8,189,186,0.04); filter: blur(80px); top: 45%; left: 45%; animation: float-orb-3 20s ease-in-out 3s infinite; }
+
+.activation-brand { text-align: center; margin-bottom: 40px; z-index: 10; }
+.activation-brand .deco-line {
+  margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.activation-brand .deco-line .line-l {
+  height: 1px; width: 80px;
+  background: linear-gradient(90deg, transparent, rgba(15,98,254,0.40));
+}
+.activation-brand .deco-line .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(78,169,250,0.60);
+}
+.activation-brand .deco-line .line-r {
+  height: 1px; width: 80px;
+  background: linear-gradient(90deg, rgba(15,98,254,0.40), transparent);
+}
+
+@keyframes scan-down {
+  0%   { top: -2px; opacity: 0; }
+  5%   { opacity: 1; }
+  95%  { opacity: 0.6; }
+  100% { top: 100%; opacity: 0; }
+}
+
+@keyframes float-orb-1 {
+  0%,100% { transform: translate(0,0); }
+  33%     { transform: translate(30px,-25px); }
+  66%     { transform: translate(-20px,15px); }
+}
+@keyframes float-orb-2 {
+  0%,100% { transform: translate(0,0); }
+  40%     { transform: translate(-35px,20px); }
+  75%     { transform: translate(25px,-30px); }
+}
+@keyframes float-orb-3 {
+  0%,100% { transform: translate(0,0); }
+  50%     { transform: translate(20px,30px); }
+}

@@ -1,0 +1,52 @@
+<!-- HOME PAGE MODULE -->
+<div id="page-home" class="page-section active">
+  <div class="page-content-area">
+    <div style="max-width:48rem;">
+      <div class="mb-4">
+        <h2 class="fw-bold" style="font-size:24px; color:#f4f4f4;">Welcome back</h2>
+        <p class="text-slate-500" style="font-size:14px;">LIVIS Edge · Mission Control Dashboard</p>
+      </div>
+
+      <!-- Machine Profile -->
+      <div class="glass-card mb-4">
+        <div class="d-flex align-items-start justify-content-between gap-3">
+          <div>
+            <h3 class="fw-semibold mb-1" style="font-size:16px; color:#f4f4f4;">Machine Profile</h3>
+            <p class="text-slate-500 mb-0" style="font-size:12px; max-width:24rem; line-height:1.5;">
+              Export this machine's hardware fingerprint, GPU info, kernel version, and license details as a JSON file.
+            </p>
+          </div>
+          <button class="btn-outline-blue" id="btn-download-profile-home" style="white-space:nowrap;">
+            <i class="bi bi-download"></i> Download Profile JSON
+          </button>
+        </div>
+      </div>
+
+      <!-- License Overview -->
+      <div class="glass-card mb-4">
+        <h3 class="text-slate-400 mb-3" style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">License Overview</h3>
+        <div class="row g-3" id="home-license-grid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="row g-3">
+        <div class="col-6">
+          <button class="glass-card quick-action w-100 border-0" id="qa-fleet" style="cursor:pointer;">
+            <i class="bi bi-grid-1x2 text-blue"></i>
+            <div class="fw-semibold" style="font-size:14px; color:#f4f4f4;">Fleet Management</div>
+            <div class="text-slate-500 mt-1" style="font-size:12px;">View and control <span id="qa-fleet-count">0</span> inspection workstation(s)</div>
+          </button>
+        </div>
+        <div class="col-6">
+          <button class="glass-card quick-action w-100 border-0" id="qa-system" style="cursor:pointer;">
+            <i class="bi bi-gear text-indigo"></i>
+            <div class="fw-semibold" style="font-size:14px; color:#f4f4f4;">System</div>
+            <div class="text-slate-500 mt-1" style="font-size:12px;">License details, hardware sanity, OTA history</div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

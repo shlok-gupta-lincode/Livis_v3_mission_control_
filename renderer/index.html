@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LIVIS Edge Plus · Mission Control</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+  <!-- Common CSS -->
+  <link rel="stylesheet" href="css/common.css">
+  <!-- Module CSS -->
+  <link rel="stylesheet" href="modules/activation/activation.css">
+  <link rel="stylesheet" href="modules/home/home.css">
+  <link rel="stylesheet" href="modules/fleet/fleet.css">
+  <link rel="stylesheet" href="modules/system/system.css">
+</head>
+
+<body>
+
+  <!-- ╔══════════════════════════════════════════════════════════════════╗
+       ║  ACTIVATION GATE (shown before login)                          ║
+       ╚══════════════════════════════════════════════════════════════════╝ -->
+  <div id="activation-gate" style="display:none;">
+    <!-- ── Activation Header (same as app header) ── -->
+    <header class="livis-header">
+      <div class="livis-header-left">
+        <div class="header-logo-group">
+          <img src="assets/lincode_logo_dark.svg" alt="Lincode">
+        </div>
+        <div class="header-station">
+          <div class="station-icon"><i class="bi bi-building"></i></div>
+          <div>
+            <div class="station-name">Activation Portal</div>
+            <div class="station-name-sub">License Verification</div>
+          </div>
+        </div>
+        <div class="header-status-pill">
+          <span class="status-indicator"></span>
+          <span>AWAITING LICENSE</span>
+        </div>
+      </div>
+
+
+    </header>
+
+    <div class="activation-page">
+      <!-- Background FX -->
+      <div class="activation-bg">
+        <div class="grid-dots"></div>
+        <div class="scan-line"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+      </div>
+
+      <!-- Brand Header -->
+      <div class="activation-brand fade-slide-up" style="position:relative; z-index:10;">
+        <div class="d-flex align-items-center justify-content-center gap-3 mb-2">
+          <img src="assets/livis_logo.svg" alt="LIVIS" style="height:40px;">
+        </div>
+        <p class="text-slate-300 fw-semibold"
+          style="letter-spacing:0.25em; text-transform:uppercase; font-size:14px; margin:0;">Control Center</p>
+        <p class="text-slate-600 mt-1" style="font-size:11px; letter-spacing:0.1em;">Edge Activation Portal · <span
+            id="act-version">v1.0</span></p>
+        <div class="deco-line">
+          <div class="line-l"></div>
+          <div class="dot"></div>
+          <div class="line-r"></div>
+        </div>
+      </div>
+
+      <!-- Resume Session Banner -->
+      <div id="resume-banner" class="w-100 mb-3 fade-slide-up"
+        style="max-width:56rem; display:none; position:relative; z-index:10;">
+        <div class="alert-banner emerald d-flex align-items-center justify-content-between p-3"
+          style="border-radius:16px;">
+          <div class="d-flex align-items-center gap-3">
+            <span
+              style="width:8px;height:8px;border-radius:50%;background:#42be65;box-shadow:0 0 8px rgba(66,190,101,0.8);flex-shrink:0;"
+              class="pulse-dot-simple"></span>
+            <div>
+              <p class="fw-semibold mb-0" style="font-size:14px; color:#6ee7b7;" id="resume-title">Active Session
+                Detected</p>
+              <p class="mb-0 mt-1" style="font-size:11px; color: rgba(66,190,101,0.6);">
+                <strong class="text-emerald" id="resume-lines">0 active workstation(s)</strong> ·
+                <strong class="text-emerald" id="resume-unused">0 unused license(s)</strong>
+              </p>
+            </div>
+          </div>
+          <button class="btn-emerald-glow" id="btn-resume" style="font-size:13px; padding:8px 20px;">
+            <i class="bi bi-arrow-right"></i> Resume Session
+          </button>
+        </div>
+      </div>
+
+      <!-- Two-column: Identity + Upload -->
+      <div class="row g-4 w-100" style="max-width:56rem; position:relative; z-index:10;">
+        <!-- LEFT: System Identity -->
+        <div class="col-md-6">
+          <div class="glass-card h-100">
+            <div class="d-flex align-items-center gap-3 mb-4 pb-3" style="border-bottom:1px solid #393939;">
+              <div
+                style="padding:8px; border-radius:10px; background:rgba(15,98,254,0.10); border:1px solid rgba(15,98,254,0.20);">
+                <i class="bi bi-shield-lock text-blue" style="font-size:16px;"></i>
+              </div>
+              <div>
+                <h2 class="mb-0" style="font-size:14px; font-weight:700;">System Identity</h2>
+                <p class="text-slate-600 mb-0" style="font-size:10px;">Hardware fingerprint</p>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <p class="text-slate-500 mb-1" style="font-size:10px; text-transform:uppercase; letter-spacing:0.05em;">
+                Machine ID</p>
+              <code class="code-block d-block" id="act-machine-id">Loading...</code>
+            </div>
+
+            <div id="act-hardware" class="row g-2 mb-3">
+              <!-- filled by JS -->
+            </div>
+
+            <button class="btn-ghost w-100" id="btn-download-profile-act">
+              <i class="bi bi-download"></i> Download Machine Profile JSON
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: License Upload -->
+        <div class="col-md-6">
+          <div class="glass-card h-100 d-flex flex-column" id="act-upload-panel">
+            <!-- Upload state (shown by default) -->
+            <div id="act-upload-state"
+              class="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-center gap-4 py-4">
+              <div style="position:relative;">
+                <div
+                  style="position:absolute;inset:0;border-radius:12px;border:1px solid rgba(255,255,255,0.07);transform:rotate(6deg);background:rgba(255,255,255,0.02);">
+                </div>
+                <div
+                  style="position:relative;width:80px;height:80px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid #393939;display:flex;align-items:center;justify-content:center;">
+                  <i class="bi bi-upload text-slate-400" style="font-size:32px;"></i>
+                </div>
+              </div>
+              <div>
+                <h3 class="fw-bold mb-1" style="font-size:16px;">Upload .livis License</h3>
+                <p class="text-slate-500" style="font-size:12px;">Drop your hardware-locked license file<br>to activate
+                  this Edge PC.</p>
+              </div>
+              <label class="btn-primary-glow" style="cursor:pointer; font-size:13px;">
+                <i class="bi bi-upload"></i> Browse Files
+                <input type="file" accept=".livis" id="act-file-input" style="display:none;">
+              </label>
+            </div>
+
+            <!-- Uploading spinner -->
+            <div id="act-uploading-state"
+              class="d-flex flex-column align-items-center justify-content-center flex-grow-1 text-center gap-3 py-4"
+              style="display:none !important;">
+              <div style="position:relative;width:80px;height:80px;">
+                <div
+                  style="position:absolute;inset:0;border-radius:50%;border:1px solid rgba(15,98,254,0.30);animation:ping 1.5s cubic-bezier(0,-0.02,0.2,1) infinite;">
+                </div>
+                <div
+                  style="width:80px;height:80px;border-radius:50%;background:rgba(15,98,254,0.10);border:1px solid rgba(15,98,254,0.25);display:flex;align-items:center;justify-content:center;">
+                  <i class="bi bi-arrow-repeat spin text-blue" style="font-size:32px;"></i>
+                </div>
+              </div>
+              <h3 class="fw-bold mb-0">Verifying License...</h3>
+              <p class="text-slate-500" style="font-size:12px;">Decrypting · Validating · Binding</p>
+            </div>
+
+            <!-- Sanity report -->
+            <div id="act-report-state" class="d-flex flex-column flex-grow-1" style="display:none !important;">
+              <div class="d-flex align-items-center gap-2 mb-3 pb-3" style="border-bottom:1px solid #393939;">
+                <i class="bi bi-check-circle-fill text-emerald" id="act-report-icon" style="font-size:16px;"></i>
+                <h3 class="mb-0 fw-bold" style="font-size:14px;" id="act-report-title">Activation Report</h3>
+              </div>
+              <div id="act-report-list" class="flex-grow-1">
+                <!-- check rows inserted by JS -->
+              </div>
+              <div id="act-continue-wrap" style="display:none;" class="mt-3 fade-slide-up">
+                <button class="btn-shimmer" id="btn-continue-mc">
+                  <i class="bi bi-arrow-right"></i> Continue to Mission Control
+                </button>
+              </div>
+              <button id="btn-try-different" class="btn-ghost w-100 mt-3" style="display:none;">Try Different
+                License</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="livis-app-footer" id="act-footer">
+        <div class="livis-footer-left"></div>
+        <div class="livis-footer-center">
+          <a href="https://www.lincode.ai" target="_blank" rel="noreferrer" class="livis-app-footer-logo">
+            <img src="assets/lincode_logo_dark.svg" alt="Lincode">
+          </a>
+          <div class="livis-footer-sep"></div>
+          <span class="livis-footer-muted">©</span>
+          <a href="https://www.lincode.ai" target="_blank" rel="noreferrer" class="livis-footer-url">www.lincode.ai</a>
+        </div>
+        <div class="livis-footer-right"></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════════════════════════════════╗
+       ║  BOOT LOADING SCREEN                                           ║
+       ╚══════════════════════════════════════════════════════════════════╝ -->
+  <div id="boot-screen" class="d-flex align-items-center justify-content-center d-none" style="min-height:100vh;">
+    <div class="text-center text-slate-500">
+      <i class="bi bi-arrow-repeat spin" style="font-size:24px;"></i>
+      <p class="mt-3" style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase;">Connecting to LIVIS...</p>
+    </div>
+  </div>
+
+  <!-- ╔══════════════════════════════════════════════════════════════════╗
+       ║  MAIN APPLICATION (after activation)                           ║
+       ╚══════════════════════════════════════════════════════════════════╝ -->
+  <div id="main-app" class="app-shell" style="display:none;">
+
+    <!-- ── Common Header ── -->
+    <header class="livis-header">
+      <div class="livis-header-left">
+        <div class="header-logo-group">
+          <img src="assets/lincode_logo_dark.svg" alt="Lincode">
+
+        </div>
+        <div class="header-station">
+          <div class="station-icon"><i class="bi bi-building"></i></div>
+          <div>
+            <div class="station-name">Mission Control</div>
+            <div class="station-name-sub">Fleet Management</div>
+          </div>
+        </div>
+        <div class="header-status-pill" id="header-status-pill">
+          <span class="status-indicator"></span>
+          <span id="header-status-text">SYSTEM ACTIVE</span>
+        </div>
+      </div>
+
+      <div class="livis-header-right">
+        <!-- System Pulse -->
+        <div class="pulse-bar-wrapper" id="topbar-pulse" style="display:none;">
+          <div class="pulse-bar">
+            <canvas id="pulse-canvas"></canvas>
+            <div class="overlay">
+              <div class="stat-col">
+                <div class="stat-label">CPU</div>
+                <div class="stat-val" id="pulse-cpu">0%</div>
+              </div>
+              <div class="divider"></div>
+              <div class="stat-col">
+                <div class="stat-label">RAM</div>
+                <div class="stat-val" id="pulse-ram">0%</div>
+              </div>
+              <div class="divider"></div>
+              <div class="stat-col">
+                <div class="stat-label">DISK</div>
+                <div class="stat-val" id="pulse-disk">0G</div>
+              </div>
+            </div>
+          </div>
+          <div class="gpu-pill" id="gpu-pill" style="display:none;">
+            <div class="gpu-label"><i class="bi bi-thermometer-half" style="font-size:8px;"></i> GPU</div>
+            <div class="gpu-val" id="pulse-gpu">0°C</div>
+          </div>
+        </div>
+
+        <!-- <div class="header-user">
+          <div class="user-avatar"><i class="bi bi-person"></i></div>
+          <div class="user-info">
+            <strong id="header-user-name">Operator</strong>
+            <span id="header-user-role">Shift 1</span>
+          </div>
+        </div> -->
+        <button class="header-notification-btn" id="btn-notification" title="Notifications">
+          <i class="bi bi-bell"></i>
+          <span id="update-dot"
+            style="display:none;position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--blue);border-radius:50%;border:2px solid #1f1f1f;animation:pulse-dot 2s infinite;"></span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ── Update banner ── -->
+    <div id="update-banner" class="update-banner d-none" style="display:none;">
+      <div class="d-flex align-items-center gap-3 min-w-0">
+        <span class="ping-dot"></span>
+        <span class="fw-bold text-blue" style="font-size:14px;">Update Available</span>
+        <span id="banner-version" class="badge-status"
+          style="background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.20);color:rgba(255,255,255,0.80);font-size:12px;font-weight:700;"></span>
+        <span id="banner-channel" class="badge-status"></span>
+        <span id="banner-feature" class="text-slate-400 d-none d-lg-inline" style="font-size:12px;"></span>
+      </div>
+      <button class="btn-primary-glow" id="btn-banner-review" style="font-size:12px; padding:8px 16px;">
+        <i class="bi bi-cloud-upload"></i> Review Update
+      </button>
+    </div>
+
+    <!-- ── Page container ── -->
+    <div id="page-container" class="page-container has-bottom-nav">
+
+      <!-- HOME PAGE (inline from module) -->
+      <div id="page-home" class="page-section active">
+        <div class="page-content-area">
+          <div id="home-layout-root" style="max-width:none; width:100%;">
+            <div class="mb-4 d-none">
+              <h2 class="fw-bold" style="font-size:24px; color:#f4f4f4;">Welcome back</h2>
+              <p class="text-slate-500" style="font-size:14px;">LIVIS Edge · Mission Control Dashboard</p>
+            </div>
+
+            <div class="row g-3 align-items-stretch">
+              <div class="col-lg-6 d-flex">
+                <!-- Machine Profile -->
+                <div class="glass-card home-top-card mb-3 h-100 w-100">
+                  <div class="d-flex flex-column h-100">
+                    <div class="d-flex align-items-start justify-content-between gap-3">
+                      <div>
+                        <h3 class="fw-semibold mb-1" style="font-size:16px; color:#f4f4f4;">Machine Profile</h3>
+                        <p class="text-slate-500 mb-0" style="font-size:12px; max-width:24rem; line-height:1.5;">
+                          Export this machine's hardware fingerprint, GPU info, kernel version, and license details as a
+                          JSON
+                          file.
+                        </p>
+                      </div>
+                    </div>
+                    <div class="mt-auto pt-3">
+                      <button class="btn-outline-blue" id="btn-download-profile-home" style="white-space:nowrap;">
+                        <i class="bi bi-download"></i> Download Profile JSON
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-lg-6 d-flex">
+                <!-- License Overview -->
+                <div class="glass-card home-top-card mb-3 h-100 w-100">
+                  <h3 class="text-slate-400 mb-2"
+                    style="font-size:13px; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">License
+                    Overview</h3>
+                  <div class="row g-2" id="home-license-grid">
+                    <!-- filled by JS -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick actions -->
+            <div class="row g-3 d-none">
+              <div class="col-12">
+                <button class="glass-card quick-action w-100 border-0" id="qa-fleet" style="cursor:pointer;">
+                  <i class="bi bi-grid-1x2 text-blue"></i>
+                  <div class="fw-semibold" style="font-size:14px; color:#f4f4f4;">Fleet Management</div>
+                  <div class="text-slate-500 mt-1" style="font-size:12px;">View and control <span
+                      id="qa-fleet-count">0</span> inspection workstation(s)</div>
+                </button>
+              </div>
+              <div class="col-12">
+                <button class="glass-card quick-action w-100 border-0" id="qa-system" style="cursor:pointer;">
+                  <i class="bi bi-gear text-indigo"></i>
+                  <div class="fw-semibold" style="font-size:14px; color:#f4f4f4;">System</div>
+                  <div class="text-slate-500 mt-1" style="font-size:12px;">License details, hardware sanity, OTA history
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FLEET PAGE -->
+      <div id="page-fleet" class="page-section">
+        <div class="subpage-header">
+          <div class="d-flex align-items-center">
+            <button class="subpage-back-btn">
+              <i class="bi bi-arrow-left"></i> BACK
+            </button>
+            <div class="subpage-title-group">
+              <h2>Fleet Management</h2>
+              <p id="fleet-subtitle">0 active workstation(s) · 0 unused license(s)</p>
+            </div>
+          </div>
+          <div class="subpage-actions">
+            <button class="btn-outline-emerald" id="btn-add-line">
+              <i class="bi bi-plus-lg"></i> Add Workstation
+            </button>
+            <button class="btn-outline-blue" id="btn-bulk-update" style="display:none;">
+              <i class="bi bi-cloud-upload"></i> Update All
+            </button>
+          </div>
+        </div>
+
+        <div class="page-content-area">
+          <!-- Empty state -->
+          <div id="fleet-empty" class="text-center py-5">
+            <div
+              style="width:64px;height:64px;border-radius:12px;background:#262626;border:1px solid #393939;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+              <i class="bi bi-grid-1x2 text-slate-600" style="font-size:28px;"></i>
+            </div>
+            <h3 class="fw-semibold text-slate-300 mb-1" style="font-size:18px;">No Workstations Yet</h3>
+            <p class="text-slate-500 mb-4 mx-auto" style="font-size:14px; max-width:24rem;">
+              Click "Add Workstation" to upload a <code class="text-blue">.livis</code> license file and create your
+              first inspection workstation.
+            </p>
+            <button class="btn-emerald-glow" id="btn-add-line-empty">
+              <i class="bi bi-plus-lg"></i> Add Workstation
+            </button>
+          </div>
+
+          <!-- Loading -->
+          <div id="fleet-loading" class="align-items-center justify-content-center py-5 text-slate-500"
+            style="display:none;">
+            <i class="bi bi-arrow-repeat spin me-2"></i>
+            <span style="font-size:14px;">Loading workstations...</span>
+          </div>
+
+          <!-- Line cards grid -->
+          <div id="fleet-grid" class="row g-3" style="display:none;">
+            <!-- LineCards inserted by JS -->
+          </div>
+          <div id="fleet-scroll-sentinel" style="height:1px;"></div>
+        </div>
+      </div>
+
+      <!-- SYSTEM PAGE -->
+      <div id="page-system" class="page-section">
+        <div class="subpage-header">
+          <div class="d-flex align-items-center">
+            <button class="subpage-back-btn">
+              <i class="bi bi-arrow-left"></i> BACK
+            </button>
+            <div class="subpage-title-group">
+              <h2>System</h2>
+              <p>License details, hardware identity, and OTA history</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="page-content-area">
+          <div id="system-content" style="max-width:none; width:100%;">
+            <!-- filled by system.js -->
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /page-container -->
+
+    <!-- ── Bottom Navigation Bar (Home only) ── -->
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="bottom-nav-item menu-btn" id="btn-license-manager">
+        <i class="bi bi-key"></i>
+        <span>License Manager</span>
+      </button>
+      <button class="bottom-nav-item" data-page="fleet">
+        <i class="bi bi-grid-1x2"></i>
+        <span>Fleet</span>
+      </button>
+      <button class="bottom-nav-item" data-page="system">
+        <i class="bi bi-gear"></i>
+        <span>System</span>
+      </button>
+    </nav>
+
+    <!-- ── Menu Overlay ── -->
+    <div class="menu-backdrop" id="menu-backdrop"></div>
+    <div class="menu-overlay" id="menu-overlay">
+      <div class="menu-header">
+        <h2>Menu</h2>
+        <button class="menu-close-btn" id="menu-close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+      <div class="menu-grid">
+        <div class="menu-grid-item" data-action="updates">
+          <i class="bi bi-cloud-download"></i>
+          <span>Software Updates</span>
+        </div>
+        <div class="menu-grid-item" data-action="license-manager">
+          <i class="bi bi-key"></i>
+          <span>License Manager</span>
+        </div>
+      </div>
+      <div class="menu-footer-links">
+        <a href="https://www.lincode.ai" target="_blank">Terms of use</a>
+        <span style="color:#6f6f6f;">and</span>
+        <a href="https://www.lincode.ai" target="_blank">Privacy policy</a>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="livis-app-footer" id="main-footer">
+      <div class="livis-footer-left"></div>
+      <div class="livis-footer-center">
+        <a href="https://www.lincode.ai" target="_blank" rel="noreferrer" class="livis-app-footer-logo">
+          <img src="assets/lincode_logo_dark.svg" alt="Lincode">
+        </a>
+        <div class="livis-footer-sep"></div>
+        <span class="livis-footer-muted">©</span>
+        <a href="https://www.lincode.ai" target="_blank" rel="noreferrer" class="livis-footer-url">www.lincode.ai</a>
+      </div>
+      <div class="livis-footer-right"></div>
+    </footer>
+  </div><!-- /main-app -->
+
+
+  <!-- ╔══════════════════════════════════════════════════════════════════╗
+       ║  MODALS                                                        ║
+       ╚══════════════════════════════════════════════════════════════════╝ -->
+
+  <!-- OTA Update Modal -->
+  <div class="modal fade" id="otaModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-cloud-upload text-blue me-2"></i>OTA Update: Workstation <span
+              id="ota-line-id"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="ota-body">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bulk Update Modal -->
+  <div class="modal fade" id="bulkModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-cloud-upload text-blue me-2"></i>Update All Workstations</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="bulk-body">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Line Modal -->
+  <div class="modal fade" id="addLineModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-plus-circle text-emerald me-2"></i>Add New Workstation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="addline-body">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit Trail Modal -->
+  <div class="modal fade" id="auditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-clock-history text-blue me-2"></i>Audit Trail: Workstation <span
+              id="audit-line-id"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="audit-body" style="max-height:70vh; overflow-y:auto;">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin PIN Modal -->
+  <div class="modal fade" id="pinModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-lock text-indigo me-2"></i><span id="pin-title">Admin
+              Confirmation</span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <p class="text-slate-400" style="font-size:14px;">Enter your 6-digit admin PIN to continue.</p>
+          <div class="d-flex gap-2 justify-content-center my-4" id="pin-boxes">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="0">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="1">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="2">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="3">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="4">
+            <input type="password" inputmode="numeric" maxlength="1" class="pin-box" data-idx="5">
+          </div>
+          <p id="pin-error" class="text-red mb-3" style="font-size:12px; display:none;"></p>
+          <button class="btn-outline-blue w-100" id="btn-pin-confirm" disabled>
+            <i class="bi bi-lock"></i> Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Center Modal -->
+  <div class="modal fade" id="updateCenterModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="d-flex align-items-center gap-3">
+            <i class="bi bi-cloud-upload text-blue" style="font-size:20px;"></i>
+            <div>
+              <h5 class="modal-title mb-0" id="uc-version">Update Available</h5>
+              <p class="text-slate-500 mb-0" style="font-size:10px;" id="uc-published"></p>
+            </div>
+            <span class="badge-status" id="uc-channel-badge"></span>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="uc-body" style="max-height:60vh; overflow-y:auto;">
+          <!-- filled by modals.js -->
+        </div>
+        <div class="modal-footer" id="uc-footer">
+          <!-- action buttons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Install Modal -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-clock text-blue me-2"></i>Schedule Update — <span
+              id="sched-version"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="sched-body">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Warning Modal -->
+  <div class="modal fade" id="deleteWarnModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-red me-2"></i>Permanent Delete</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="delete-warn-body">
+          <!-- filled by modals.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fleet Delete Confirmation Modal -->
+  <div class="modal fade" id="fleetDeleteModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-exclamation-triangle text-red me-2"></i>Delete Workstation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="delete-modal-icon">
+            <i class="bi bi-trash3"></i>
+          </div>
+          <p class="text-slate-300 fw-semibold mb-1" style="font-size:15px;">Delete workstation and release license?</p>
+          <p class="text-slate-500 mb-0" style="font-size:12px;">
+            Workstation <strong class="text-slate-300" id="delete-ws-id"></strong> will be permanently removed and its
+            license returned to the unused pool.
+          </p>
+          <div id="fleet-delete-error" class="alert-banner red mt-3" style="display:none;"></div>
+        </div>
+        <div class="modal-footer d-flex gap-2">
+          <button class="btn-ghost flex-grow-1" data-bs-dismiss="modal"><i class="bi bi-x-lg"></i> Cancel</button>
+          <button class="btn-outline-red flex-grow-1" id="btn-fleet-delete-confirm"
+            onclick="Fleet.confirmDeleteFromModal()"><i class="bi bi-trash3"></i> Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fleet Vitals Modal -->
+  <div class="modal fade" id="fleetVitalsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-broadcast text-blue" style="font-size:18px;"></i>
+            <h5 class="modal-title mb-0">Live Vitals — Workstation <span id="vitals-ws-id"></span></h5>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="vitals-body" style="min-height:200px;">
+          <!-- filled by fleet.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="update-toast" class="update-toast d-none">
+    <div class="toast-body">
+      <div class="accent-bar"></div>
+      <div class="p-3">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-bell text-blue"></i>
+            <span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">Update
+              Available</span>
+          </div>
+          <button class="btn p-0 text-slate-500" id="toast-dismiss" style="font-size:16px;"><i
+              class="bi bi-x"></i></button>
+        </div>
+        <div class="d-flex align-items-center gap-2 mb-3">
+          <span style="font-size:18px; font-weight:700; color:#fff;" id="toast-version"></span>
+          <span class="badge-status" id="toast-channel"></span>
+        </div>
+        <p class="text-slate-400 mb-3" style="font-size:12px;" id="toast-feature"></p>
+        <div class="d-flex gap-2">
+          <button class="btn-outline-blue flex-grow-1" style="font-size:12px; padding:8px;" id="toast-view">
+            View Update <i class="bi bi-arrow-right ms-1"></i>
+          </button>
+          <button class="btn-ghost" style="font-size:12px; padding:8px 12px;" id="toast-later">Later</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── Scripts ── -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/systemPulse.js"></script>
+  <script src="js/router.js"></script>
+  <script src="modules/activation/activation.js"></script>
+  <script src="modules/home/home.js"></script>
+  <script src="modules/fleet/fleet.js"></script>
+  <script src="modules/system/system.js"></script>
+  <script src="modules/modals/modals.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
