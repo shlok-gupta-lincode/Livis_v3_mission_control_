@@ -76,9 +76,11 @@ const Activation = {
   showResumeBanner(data, lines, unused) {
     const banner = document.getElementById('resume-banner');
     const hasActive = lines.some(l => l.state === 'ACTIVE');
-    document.getElementById('resume-title').textContent = hasActive ? 'Active Session Detected' : 'License Ready — Session Paused';
-    document.getElementById('resume-lines').textContent = lines.length + ' active workstation(s)';
-    document.getElementById('resume-unused').textContent = unused.length + ' unused license(s)';
+    document.getElementById('resume-title').textContent = hasActive
+      ? I18n.t('activation.resume.activeSessionDetected', {}, 'Active Session Detected')
+      : I18n.t('activation.resume.sessionPaused', {}, 'License Ready — Session Paused');
+    document.getElementById('resume-lines').textContent = I18n.t('activation.resume.activeWorkstations', { count: lines.length }, `${lines.length} active workstation(s)`);
+    document.getElementById('resume-unused').textContent = I18n.t('activation.resume.unusedLicenses', { count: unused.length }, `${unused.length} unused license(s)`);
     banner.style.display = '';
   },
 
@@ -88,21 +90,21 @@ const Activation = {
       <div class="col-6">
         <div class="stat-box">
           <i class="bi bi-cpu text-slate-600 mb-1" style="font-size:14px; display:block;"></i>
-          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">CPU Cores</p>
-          <p class="fw-semibold text-slate-200 mb-0" style="font-size:12px;">${hw.cpu_cores} Logical</p>
+          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">${I18n.t('activation.cpuCores', {}, 'CPU Cores')}</p>
+          <p class="fw-semibold text-slate-200 mb-0" style="font-size:12px;">${hw.cpu_cores} ${I18n.t('activation.logical', {}, 'Logical')}</p>
         </div>
       </div>
       <div class="col-6">
         <div class="stat-box">
           <i class="bi bi-memory text-slate-600 mb-1" style="font-size:14px; display:block;"></i>
-          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">Total RAM</p>
+          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">${I18n.t('activation.totalRam', {}, 'Total RAM')}</p>
           <p class="fw-semibold text-slate-200 mb-0" style="font-size:12px;">${hw.ram_total_gb} GB</p>
         </div>
       </div>
       <div class="col-12">
         <div class="stat-box">
           <i class="bi bi-gpu-card text-slate-600 mb-1" style="font-size:14px; display:block;"></i>
-          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">GPU / Driver</p>
+          <p class="text-slate-500 mb-0" style="font-size:9px; text-transform:uppercase; letter-spacing:0.05em;">${I18n.t('activation.gpuDriver', {}, 'GPU / Driver')}</p>
           <p class="fw-semibold text-slate-200 mb-0 text-truncate" style="font-size:12px;" title="${hw.gpu_info}">${hw.gpu_info}</p>
         </div>
       </div>`;
@@ -145,17 +147,21 @@ const Activation = {
       const status = err.status;
       const detail = Api.errorDetail(err);
 
-      let checkLabel = 'License Upload Failed';
-      if (!err.status)         checkLabel = 'Service Unreachable';
-      else if (status === 400) checkLabel = 'File Validation Failed';
-      else if (status === 422) checkLabel = 'Fernet Signature Invalid';
-      else if (status === 403) checkLabel = 'Machine ID Mismatch';
-      else if (status === 413) checkLabel = 'File Too Large';
-      else if (status >= 500)  checkLabel = 'Server Error';
+      let checkLabel = I18n.t('activation.report.check.uploadFailed', {}, 'License Upload Failed');
+      if (!err.status)         checkLabel = I18n.t('activation.report.check.serviceUnreachable', {}, 'Service Unreachable');
+      else if (status === 400) checkLabel = I18n.t('activation.report.check.fileValidationFailed', {}, 'File Validation Failed');
+      else if (status === 422) checkLabel = I18n.t('activation.report.check.signatureInvalid', {}, 'Fernet Signature Invalid');
+      else if (status === 403) checkLabel = I18n.t('activation.report.check.machineMismatch', {}, 'Machine ID Mismatch');
+      else if (status === 413) checkLabel = I18n.t('activation.report.check.fileTooLarge', {}, 'File Too Large');
+      else if (status >= 500)  checkLabel = I18n.t('activation.report.check.serverError', {}, 'Server Error');
 
       this.sanityReport = [{ check: checkLabel, passed: false, detail }];
       if (status === 403 && detail.toLowerCase().includes('machine')) {
-        this.sanityReport.push({ check: 'How to Fix', passed: false, detail: 'Your Machine ID is shown in the left panel. Share it with your license issuer.' });
+        this.sanityReport.push({
+          check: I18n.t('activation.report.check.howToFix', {}, 'How to Fix'),
+          passed: false,
+          detail: I18n.t('activation.report.detail.howToFixMachine', {}, 'Your Machine ID is shown in the left panel. Share it with your license issuer.'),
+        });
       }
       this.showReport();
     }
@@ -170,12 +176,12 @@ const Activation = {
 
     if (allPassed) {
       icon.className = 'bi bi-check-circle-fill text-emerald';
-      title.textContent = 'Activation Report';
+      title.textContent = I18n.t('activation.report.title', {}, 'Activation Report');
       document.getElementById('btn-try-different').style.display = 'none';
       document.getElementById('act-continue-wrap').style.display = 'none';
     } else {
       icon.className = 'bi bi-x-circle-fill text-red';
-      title.textContent = 'Verification Failed';
+      title.textContent = I18n.t('activation.report.failed', {}, 'Verification Failed');
       document.getElementById('act-continue-wrap').style.display = 'none';
     }
 
@@ -228,7 +234,7 @@ const Activation = {
   async downloadProfile() {
     const btn = document.getElementById('btn-download-profile-act');
     btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Generating...';
+    btn.innerHTML = `<i class="bi bi-arrow-repeat spin"></i> ${I18n.t('common.generating', {}, 'Generating...')}`;
     try {
       const data = await Api.get('/api/system/machine-profile');
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -240,7 +246,7 @@ const Activation = {
       URL.revokeObjectURL(url);
     } catch (e) { console.error('Profile download failed:', e); }
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-download"></i> Download Machine Profile JSON';
+    btn.innerHTML = `<i class="bi bi-download"></i> ${I18n.t('activation.downloadProfile', {}, 'Download Machine Profile JSON')}`;
   },
 };
 

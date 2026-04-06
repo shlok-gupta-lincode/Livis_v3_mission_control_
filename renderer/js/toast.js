@@ -17,7 +17,7 @@ const Toast = {
     chBadge.className = `badge-status ${channelClasses[channel] || 'badge-stable'}`;
     chBadge.textContent = channel;
 
-    const feature = release.features?.[0] || 'A new update is available for your workstations.';
+    const feature = release.features?.[0] || I18n.t('toast.defaultFeature', {}, 'A new update is available for your workstations.');
     document.getElementById('toast-feature').textContent = feature;
 
     const toast = document.getElementById('update-toast');

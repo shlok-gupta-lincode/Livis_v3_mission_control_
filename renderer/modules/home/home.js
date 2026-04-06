@@ -28,10 +28,10 @@ const Home = {
     // License overview grid
     const grid = document.getElementById('home-license-grid');
     const items = [
-      { label: 'Active Workstations', value: activeLines.length, color: 'text-emerald' },
-      { label: 'Total Workstations', value: totalLines, color: '' },
-      { label: 'Unused Licenses', value: unusedLicenses.length, color: 'text-blue' },
-      { label: 'Time Watermark', value: timeOk ? 'OK' : 'WARN', color: timeOk ? 'text-emerald' : 'text-amber' },
+      { label: I18n.t('home.activeWorkstations', {}, 'Active Workstations'), value: activeLines.length, color: 'text-emerald' },
+      { label: I18n.t('home.totalWorkstations', {}, 'Total Workstations'), value: totalLines, color: '' },
+      { label: I18n.t('home.unusedLicenses', {}, 'Unused Licenses'), value: unusedLicenses.length, color: 'text-blue' },
+      { label: I18n.t('home.timeWatermark', {}, 'Time Watermark'), value: timeOk ? I18n.t('home.timeWatermark.ok', {}, 'OK') : I18n.t('home.timeWatermark.warn', {}, 'WARN'), color: timeOk ? 'text-emerald' : 'text-amber' },
     ];
     grid.innerHTML = items.map(i => `
       <div class="col-6 col-md-3">
@@ -75,45 +75,45 @@ const Home = {
     analyticsBlock.innerHTML = `
       <div class="d-flex align-items-start justify-content-between gap-3 mb-3 flex-wrap">
         <div>
-          <h3 class="fw-semibold mb-1" style="font-size:16px; color:#f4f4f4;">Operations Analytics</h3>
-          <p class="text-slate-500 mb-0" style="font-size:12px;">Live overview + telemetry trend chart.</p>
+          <h3 class="fw-semibold mb-1" style="font-size:16px; color:#f4f4f4;">${I18n.t('home.operationsAnalytics', {}, 'Operations Analytics')}</h3>
+          <p class="text-slate-500 mb-0" style="font-size:12px;">${I18n.t('home.analyticsSubtitle', {}, 'Live overview + telemetry trend chart.')}</p>
         </div>
         <div class="d-flex align-items-center gap-2">
-          <label for="home-line-select" class="text-slate-500" style="font-size:11px;">Line</label>
+          <label for="home-line-select" class="text-slate-500" style="font-size:11px;">${I18n.t('home.lineLabel', {}, 'Line')}</label>
           <select id="home-line-select" class="form-select" style="min-width:160px; font-size:12px; padding:6px 10px;">
-            <option value="overall">Overall Fleet</option>
+            <option value="overall">${I18n.t('home.overallFleet', {}, 'Overall Fleet')}</option>
           </select>
-          <span class="badge-status badge-count">LIVE</span>
+          <span class="badge-status badge-count">${I18n.t('home.live', {}, 'LIVE')}</span>
         </div>
       </div>
 
       <div class="row g-3 mb-3">
-        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">Running Now</p><p class="analytics-kpi-value text-emerald">${runningNow}</p></div></div>
-        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">Total Inspections</p><p class="analytics-kpi-value text-blue">${totalInspections.toLocaleString()}</p></div></div>
-        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">Quota Used</p><p class="analytics-kpi-value ${quotaFromLicense > 0 ? 'text-indigo' : 'text-slate-300'}">${quotaFromLicense > 0 ? `${quotaPct.toFixed(1)}%` : 'N/A'}</p></div></div>
-        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">Avg / Workstation</p><p class="analytics-kpi-value text-cyan">${avgPerWorkstation.toLocaleString()}</p></div></div>
+        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">${I18n.t('home.runningNow', {}, 'Running Now')}</p><p class="analytics-kpi-value text-emerald">${runningNow}</p></div></div>
+        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">${I18n.t('home.totalInspections', {}, 'Total Inspections')}</p><p class="analytics-kpi-value text-blue">${totalInspections.toLocaleString()}</p></div></div>
+        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">${I18n.t('home.quotaUsed', {}, 'Quota Used')}</p><p class="analytics-kpi-value ${quotaFromLicense > 0 ? 'text-indigo' : 'text-slate-300'}">${quotaFromLicense > 0 ? `${quotaPct.toFixed(1)}%` : I18n.t('common.nA', {}, 'N/A')}</p></div></div>
+        <div class="col-6 col-md-3"><div class="analytics-kpi"><p class="analytics-kpi-label">${I18n.t('home.avgPerWorkstation', {}, 'Avg / Workstation')}</p><p class="analytics-kpi-value text-cyan">${avgPerWorkstation.toLocaleString()}</p></div></div>
       </div>
 
       <div class="row g-3">
         <div class="col-md-12 col-lg-8">
           <div class="analytics-panel mb-3">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <p class="analytics-title mb-0">Telemetry Trend</p>
-              <span class="text-slate-500" style="font-size:10px;">last ${this.telemetryHistory.maxPoints} samples</span>
+              <p class="analytics-title mb-0">${I18n.t('home.telemetryTrend', {}, 'Telemetry Trend')}</p>
+              <span class="text-slate-500" style="font-size:10px;">${I18n.t('home.lastSamples', { count: this.telemetryHistory.maxPoints }, `last ${this.telemetryHistory.maxPoints} samples`)}</span>
             </div>
             <canvas id="home-telemetry-chart" class="home-telemetry-chart"></canvas>
           </div>
           <div class="analytics-panel">
             <div class="d-flex align-items-center justify-content-between mb-2">
-              <p class="analytics-title mb-0">Inspection Load by Workstation</p>
-              <span class="text-slate-500" style="font-size:10px;">auto-refresh</span>
+              <p class="analytics-title mb-0">${I18n.t('home.inspectionLoadByWorkstation', {}, 'Inspection Load by Workstation')}</p>
+              <span class="text-slate-500" style="font-size:10px;">${I18n.t('home.autoRefresh', {}, 'auto-refresh')}</span>
             </div>
             <div class="analytics-bars">${this.renderWorkstationBars(telemetryRows)}</div>
           </div>
         </div>
         <div class="col-md-12 col-lg-4">
           <div class="analytics-panel h-100">
-            <p class="analytics-title mb-2">Fleet Capacity</p>
+            <p class="analytics-title mb-2">${I18n.t('home.fleetCapacity', {}, 'Fleet Capacity')}</p>
             <div class="analytics-donut-wrap">${this.renderCapacityDonut(quotaPct, quotaFromLicense)}</div>
           </div>
         </div>
@@ -128,7 +128,7 @@ const Home = {
   async downloadProfile() {
     const btn = document.getElementById('btn-download-profile-home');
     btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Generating...';
+    btn.innerHTML = `<i class="bi bi-arrow-repeat spin"></i> ${I18n.t('common.generating', {}, 'Generating...')}`;
     try {
       const data = await Api.get('/api/system/machine-profile');
       const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -140,12 +140,12 @@ const Home = {
       URL.revokeObjectURL(url);
     } catch (e) { console.error('Profile download failed:', e); }
     btn.disabled = false;
-    btn.innerHTML = '<i class="bi bi-download"></i> Download Profile JSON';
+    btn.innerHTML = `<i class="bi bi-download"></i> ${I18n.t('home.downloadProfile', {}, 'Download Profile JSON')}`;
   },
 
   renderWorkstationBars(rows) {
     if (!rows.length) {
-      return '<p class="text-slate-500 mb-0" style="font-size:12px;">No workstation telemetry yet.</p>';
+      return `<p class="text-slate-500 mb-0" style="font-size:12px;">${I18n.t('home.noTelemetryYet', {}, 'No workstation telemetry yet.')}</p>`;
     }
 
     const peak = Math.max(...rows.map((row) => row.total || 0), 1);
@@ -157,7 +157,7 @@ const Home = {
         return `
           <div class="analytics-bar-row">
             <div class="analytics-bar-meta">
-              <span class="text-slate-300">WS ${row.lineId}</span>
+              <span class="text-slate-300">${I18n.t('home.workstation', { id: row.lineId }, `WS ${row.lineId}`)}</span>
               <span class="text-slate-500">${(row.total || 0).toLocaleString()}</span>
             </div>
             <div class="analytics-bar-track">
@@ -174,7 +174,7 @@ const Home = {
       return `
         <div class="analytics-empty">
           <i class="bi bi-pie-chart text-slate-600"></i>
-          <p class="text-slate-500 mb-0">No count-based quota</p>
+          <p class="text-slate-500 mb-0">${I18n.t('home.noCountQuota', {}, 'No count-based quota')}</p>
         </div>
       `;
     }
@@ -183,10 +183,10 @@ const Home = {
       <div class="analytics-donut" style="--pct:${quotaPct.toFixed(2)};">
         <div class="analytics-donut-center">
           <p class="analytics-donut-value">${quotaPct.toFixed(1)}%</p>
-          <p class="analytics-donut-label">used</p>
+          <p class="analytics-donut-label">${I18n.t('home.used', {}, 'used')}</p>
         </div>
       </div>
-      <p class="text-slate-500 mb-0 mt-2 text-center" style="font-size:11px;">Quota: ${quota.toLocaleString()}</p>
+      <p class="text-slate-500 mb-0 mt-2 text-center" style="font-size:11px;">${I18n.t('home.quota', {}, 'Quota')}: ${quota.toLocaleString()}</p>
     `;
   },
 
@@ -195,8 +195,8 @@ const Home = {
     if (!select) return;
 
     const prev = this.telemetryHistory.selected;
-    const options = ['<option value="overall">Overall Fleet</option>']
-      .concat(activeLines.map((line) => `<option value="${line.line_id}">Workstation ${line.line_id}</option>`));
+    const options = [`<option value="overall">${I18n.t('home.overallFleet', {}, 'Overall Fleet')}</option>`]
+      .concat(activeLines.map((line) => `<option value="${line.line_id}">${I18n.t('home.workstation', { id: line.line_id }, `Workstation ${line.line_id}`)}</option>`));
     select.innerHTML = options.join('');
     select.value = activeLines.some((line) => line.line_id === prev) || prev === 'overall' ? prev : 'overall';
     this.telemetryHistory.selected = select.value;
@@ -279,7 +279,7 @@ const Home = {
     if (source.length < 2) {
       ctx.fillStyle = '#8d8d8d';
       ctx.font = '12px Inter, sans-serif';
-      ctx.fillText('Waiting for telemetry samples...', 12, 24);
+      ctx.fillText(I18n.t('home.waitingSamples', {}, 'Waiting for telemetry samples...'), 12, 24);
       return;
     }
 
@@ -313,7 +313,7 @@ const Home = {
 
     ctx.fillStyle = '#c6c6c6';
     ctx.font = '11px Inter, sans-serif';
-    ctx.fillText(`Latest: ${last.v.toLocaleString()}`, 12, height - 8);
+    ctx.fillText(`${I18n.t('home.latest', {}, 'Latest')}: ${last.v.toLocaleString()}`, 12, height - 8);
   },
 };
 

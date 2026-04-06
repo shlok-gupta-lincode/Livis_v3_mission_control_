@@ -26,8 +26,11 @@ const Fleet = {
     const activeLines = (state.activeLicense?.lines || []).filter(l => l.state === 'ACTIVE');
     const unusedLicenses = state.activeLicense?.unused_licenses || [];
 
-    document.getElementById('fleet-subtitle').textContent =
-      `${activeLines.length} active workstation(s) · ${unusedLicenses.length} unused license(s)`;
+    document.getElementById('fleet-subtitle').textContent = I18n.t(
+      'fleet.subtitle',
+      { active: activeLines.length, unused: unusedLicenses.length },
+      `${activeLines.length} active workstation(s) · ${unusedLicenses.length} unused license(s)`,
+    );
 
     const bulkBtn = document.getElementById('btn-bulk-update');
     bulkBtn.style.display = activeLines.length > 0 ? '' : 'none';
@@ -136,8 +139,8 @@ const Fleet = {
         <div id="lc-pulling-${lineId}" class="alert-banner blue" style="display:none;">
           <i class="bi bi-arrow-repeat spin" style="flex-shrink:0;"></i>
           <div>
-            <div class="fw-semibold" style="font-size:12px;">Downloading backend image…</div>
-            <div style="font-size:9px; opacity:0.6; margin-top:2px;">First-time only. Starts automatically when ready.</div>
+            <div class="fw-semibold" style="font-size:12px;">${I18n.t('fleet.card.downloadingImage', {}, 'Downloading backend image...')}</div>
+            <div style="font-size:9px; opacity:0.6; margin-top:2px;">${I18n.t('fleet.card.firstTimeOnly', {}, 'First-time only. Starts automatically when ready.')}</div>
           </div>
         </div>
         <div id="lc-error-${lineId}" class="alert-banner red" style="display:none;">
@@ -151,12 +154,12 @@ const Fleet = {
         <div class="lc-header-left">
           <div class="lc-header-icon"><i class="bi bi-hdd-rack"></i></div>
           <div class="lc-header-text">
-            <div class="lc-ws-name">Workstation ${lineId}</div>
-            <div class="lc-ws-sub" id="lc-image-${lineId}">No image</div>
+            <div class="lc-ws-name">${I18n.t('home.workstation', { id: lineId }, `Workstation ${lineId}`)}</div>
+            <div class="lc-ws-sub" id="lc-image-${lineId}">${I18n.t('fleet.card.noImage', {}, 'No image')}</div>
           </div>
         </div>
         <div class="lc-header-right">
-          <span class="badge-status badge-idle" id="lc-badge-${lineId}">Idle</span>
+          <span class="badge-status badge-idle" id="lc-badge-${lineId}">${I18n.t('fleet.card.idle', {}, 'Idle')}</span>
         </div>
       </div>
 
@@ -167,7 +170,7 @@ const Fleet = {
 
         <!-- Part name (always visible) -->
         <div id="lc-part-${lineId}" class="lc-part-pill">
-          <span class="lc-part-pill-label">Part</span>
+          <span class="lc-part-pill-label">${I18n.t('fleet.card.part', {}, 'Part')}</span>
           <span class="lc-part-pill-value text-slate-500" id="lc-part-name-${lineId}">--</span>
         </div>
 
@@ -178,15 +181,15 @@ const Fleet = {
             <div class="lc-stat-value text-slate-500" id="lc-tat-${lineId}">--</div>
           </div>
           <div class="lc-stat">
-            <div class="lc-stat-label">Total</div>
+            <div class="lc-stat-label">${I18n.t('fleet.card.total', {}, 'Total')}</div>
             <div class="lc-stat-value text-slate-500" id="lc-total-${lineId}">--</div>
           </div>
           <div class="lc-stat">
-            <div class="lc-stat-label">Pass</div>
+            <div class="lc-stat-label">${I18n.t('fleet.card.pass', {}, 'Pass')}</div>
             <div class="lc-stat-value text-slate-500" id="lc-pass-${lineId}">--</div>
           </div>
           <div class="lc-stat">
-            <div class="lc-stat-label">Fail</div>
+            <div class="lc-stat-label">${I18n.t('fleet.card.fail', {}, 'Fail')}</div>
             <div class="lc-stat-value text-slate-500" id="lc-fail-${lineId}">--</div>
           </div>
         </div>
@@ -194,14 +197,14 @@ const Fleet = {
         <!-- Meta row (OTA status) -->
         <div class="lc-meta-row">
           <div class="lc-meta-item">
-            <div class="lc-meta-item-label">OTA Status</div>
+            <div class="lc-meta-item-label">${I18n.t('fleet.card.otaStatus', {}, 'OTA Status')}</div>
             <div class="lc-meta-item-value text-capitalize" id="lc-ota-${lineId}">unknown</div>
           </div>
           <div class="lc-meta-sep"></div>
           <div class="lc-meta-item">
-            <div class="lc-meta-item-label">Audit</div>
-            <button class="btn p-0 border-0 bg-transparent" onclick="Modals.openAudit('${lineId}')" title="View Audit Trail" style="font-size:12px; color:#78a9ff; font-weight:600;">
-              <i class="bi bi-clock-history"></i> View
+            <div class="lc-meta-item-label">${I18n.t('fleet.card.audit', {}, 'Audit')}</div>
+            <button class="btn p-0 border-0 bg-transparent" onclick="Modals.openAudit('${lineId}')" title="${I18n.t('fleet.card.view', {}, 'View')}" style="font-size:12px; color:#78a9ff; font-weight:600;">
+              <i class="bi bi-clock-history"></i> ${I18n.t('fleet.card.view', {}, 'View')}
             </button>
           </div>
         </div>
@@ -210,27 +213,27 @@ const Fleet = {
       <!-- Footer: Controls -->
       <div class="lc-footer">
         <button class="lc-btn start" id="lc-start-${lineId}" onclick="Fleet.handleAction('${lineId}','start')">
-          <i class="bi bi-play-fill"></i> Start
+          <i class="bi bi-play-fill"></i> ${I18n.t('fleet.card.start', {}, 'Start')}
         </button>
         <button class="lc-btn restart" id="lc-restart-${lineId}" onclick="Fleet.handleAction('${lineId}','restart')" disabled>
-          <i class="bi bi-arrow-clockwise"></i> Restart
+          <i class="bi bi-arrow-clockwise"></i> ${I18n.t('fleet.card.restart', {}, 'Restart')}
         </button>
 
         <!-- Actions dropdown -->
         <div class="lc-actions-wrap" id="lc-actions-wrap-${lineId}">
-          <button class="lc-actions-trigger" onclick="Fleet.toggleDropdown('${lineId}')" title="More actions">
+          <button class="lc-actions-trigger" onclick="Fleet.toggleDropdown('${lineId}')" title="${I18n.t('fleet.card.moreActions', {}, 'More actions')}">
             <i class="bi bi-three-dots-vertical"></i>
           </button>
           <div class="lc-actions-menu" id="lc-actions-menu-${lineId}">
             <button class="lc-action-item" onclick="Modals.openOTA('${lineId}'); Fleet.closeDropdown();">
-              <i class="bi bi-cloud-upload"></i> Update Image
+              <i class="bi bi-cloud-upload"></i> ${I18n.t('fleet.card.updateImage', {}, 'Update Image')}
             </button>
             <button class="lc-action-item" onclick="Fleet.openVitals('${lineId}'); Fleet.closeDropdown();">
-              <i class="bi bi-broadcast"></i> Vitals
+              <i class="bi bi-broadcast"></i> ${I18n.t('fleet.card.vitals', {}, 'Vitals')}
             </button>
             <div class="lc-action-sep"></div>
             <button class="lc-action-item danger" onclick="Fleet.openDeleteModal('${lineId}'); Fleet.closeDropdown();">
-              <i class="bi bi-trash3"></i> Delete Workstation
+              <i class="bi bi-trash3"></i> ${I18n.t('fleet.card.deleteWorkstation', {}, 'Delete Workstation')}
             </button>
           </div>
         </div>
@@ -267,7 +270,7 @@ const Fleet = {
     // Reset state
     document.getElementById('fleet-delete-error').style.display = 'none';
     document.getElementById('btn-fleet-delete-confirm').disabled = false;
-    document.getElementById('btn-fleet-delete-confirm').innerHTML = '<i class="bi bi-trash3"></i> Delete';
+    document.getElementById('btn-fleet-delete-confirm').innerHTML = `<i class="bi bi-trash3"></i> ${I18n.t('common.delete', {}, 'Delete')}`;
     modal.show();
   },
 
@@ -277,7 +280,7 @@ const Fleet = {
     const btn = document.getElementById('btn-fleet-delete-confirm');
     const errEl = document.getElementById('fleet-delete-error');
     btn.disabled = true;
-    btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Deleting...';
+    btn.innerHTML = `<i class="bi bi-arrow-repeat spin"></i> ${I18n.t('fleet.delete.deleting', {}, 'Deleting...')}`;
     errEl.style.display = 'none';
 
     try {
@@ -292,7 +295,7 @@ const Fleet = {
       errEl.textContent = Api.errorDetail(err);
       errEl.style.display = '';
       btn.disabled = false;
-      btn.innerHTML = '<i class="bi bi-trash3"></i> Delete';
+      btn.innerHTML = `<i class="bi bi-trash3"></i> ${I18n.t('common.delete', {}, 'Delete')}`;
     }
   },
 
@@ -331,8 +334,8 @@ const Fleet = {
           <div style="width:56px;height:56px;border-radius:50%;background:#1f1f1f;border:1px solid #393939;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
             <i class="bi bi-power text-slate-500" style="font-size:24px;"></i>
           </div>
-          <p class="text-slate-400 fw-semibold mb-1">Container Offline</p>
-          <p class="text-slate-600 mb-0" style="font-size:12px;">Start the workstation to view live telemetry.</p>
+          <p class="text-slate-400 fw-semibold mb-1">${I18n.t('fleet.vitals.offline', {}, 'Container Offline')}</p>
+          <p class="text-slate-600 mb-0" style="font-size:12px;">${I18n.t('fleet.vitals.startToView', {}, 'Start the workstation to view live telemetry.')}</p>
         </div>`;
       return;
     }
@@ -341,7 +344,7 @@ const Fleet = {
       body.innerHTML = `
         <div class="text-center py-5">
           <i class="bi bi-arrow-repeat spin text-blue" style="font-size:24px;"></i>
-          <p class="text-slate-400 mt-3">Awaiting telemetry payload...</p>
+          <p class="text-slate-400 mt-3">${I18n.t('fleet.vitals.awaiting', {}, 'Awaiting telemetry payload...')}</p>
         </div>`;
       return;
     }
@@ -350,12 +353,12 @@ const Fleet = {
 
     // Core stats
     const stats = [
-      { label: 'State', value: (telemetry.state || 'Initializing').replace(/_/g, ' '), color: 'text-slate-200' },
+      { label: I18n.t('fleet.vitals.state', {}, 'State'), value: (telemetry.state || 'Initializing').replace(/_/g, ' '), color: 'text-slate-200' },
       { label: 'TAT', value: `${telemetry.tat ?? 0}s`, color: 'text-emerald' },
-      { label: 'Frames Processed', value: (telemetry.frames_processed ?? 0).toLocaleString(), color: 'text-blue' },
-      { label: 'Anomalies', value: telemetry.anomalies_detected ?? 0, color: (telemetry.anomalies_detected ?? 0) > 0 ? 'text-red' : 'text-slate-300' },
+      { label: I18n.t('fleet.vitals.framesProcessed', {}, 'Frames Processed'), value: (telemetry.frames_processed ?? 0).toLocaleString(), color: 'text-blue' },
+      { label: I18n.t('fleet.vitals.anomalies', {}, 'Anomalies'), value: telemetry.anomalies_detected ?? 0, color: (telemetry.anomalies_detected ?? 0) > 0 ? 'text-red' : 'text-slate-300' },
       { label: 'Total Inspected', value: (telemetry.total_inspected ?? 0).toLocaleString(), color: 'text-indigo' },
-      { label: 'Part Name', value: telemetry.part_name || '—', color: 'text-cyan' },
+      { label: I18n.t('fleet.vitals.partName', {}, 'Part Name'), value: telemetry.part_name || '—', color: 'text-cyan' },
     ];
 
     stats.forEach(s => {
@@ -371,7 +374,7 @@ const Fleet = {
       const bc = telemetry.gpu_temp > 80 ? 'var(--red)' : telemetry.gpu_temp > 70 ? 'var(--amber)' : 'var(--emerald)';
       html += `<div class="vitals-stat vitals-wide">
         <div class="d-flex align-items-center justify-content-between mb-2">
-          <div class="vitals-stat-label mb-0 d-flex align-items-center gap-1"><i class="bi bi-thermometer-half"></i> GPU Temperature</div>
+          <div class="vitals-stat-label mb-0 d-flex align-items-center gap-1"><i class="bi bi-thermometer-half"></i> ${I18n.t('fleet.vitals.gpuTemp', {}, 'GPU Temperature')}</div>
           <span class="fw-bold font-mono ${tc}" style="font-size:16px;">${telemetry.gpu_temp}°C</span>
         </div>
         <div class="progress-bar-custom" style="height:8px;"><div class="fill" style="width:${Math.min(telemetry.gpu_temp, 100)}%; background:${bc};"></div></div>
@@ -383,7 +386,7 @@ const Fleet = {
       const passP = (telemetry.total_accepted / telemetry.total_inspected * 100).toFixed(1);
       html += `<div class="vitals-stat vitals-wide">
         <div class="d-flex justify-content-between mb-2">
-          <div class="vitals-stat-label mb-0">Pass / Fail Yield</div>
+          <div class="vitals-stat-label mb-0">${I18n.t('fleet.vitals.passFailYield', {}, 'Pass / Fail Yield')}</div>
           <div>
             <span class="font-mono text-emerald fw-bold" style="font-size:14px;">${(telemetry.total_accepted ?? 0).toLocaleString()}</span>
             <span class="text-slate-600 mx-1">/</span>
@@ -469,7 +472,7 @@ const Fleet = {
     // Badge
     const badge = document.getElementById(`lc-badge-${lineId}`);
     badge.className = `badge-status ${isRunning ? 'badge-running' : 'badge-idle'}`;
-    badge.textContent = isRunning ? 'Running' : 'Idle';
+    badge.textContent = isRunning ? I18n.t('fleet.card.running', {}, 'Running') : I18n.t('fleet.card.idle', {}, 'Idle');
 
     // Image subtitle
     const image = status.ota_telemetry?.current_image || 'No image';
@@ -484,11 +487,11 @@ const Fleet = {
     const startBtn = document.getElementById(`lc-start-${lineId}`);
     if (isRunning) {
       startBtn.className = 'lc-btn stop';
-      startBtn.innerHTML = '<i class="bi bi-stop-fill"></i> Stop';
+      startBtn.innerHTML = `<i class="bi bi-stop-fill"></i> ${I18n.t('fleet.card.stop', {}, 'Stop')}`;
       startBtn.onclick = () => Fleet.handleAction(lineId, 'stop');
     } else {
       startBtn.className = 'lc-btn start';
-      startBtn.innerHTML = '<i class="bi bi-play-fill"></i> Start';
+      startBtn.innerHTML = `<i class="bi bi-play-fill"></i> ${I18n.t('fleet.card.start', {}, 'Start')}`;
       startBtn.onclick = () => Fleet.handleAction(lineId, 'start');
     }
 
@@ -567,7 +570,7 @@ const Fleet = {
           document.getElementById(`lc-pulling-${lineId}`).style.display = '';
           this.pollImageReady(lineId);
         } catch {
-          errorMsg.textContent = 'Failed to start image download.';
+          errorMsg.textContent = I18n.t('fleet.card.imageDownloadFailed', {}, 'Failed to start image download.');
           errorEl.style.display = '';
         }
       } else {

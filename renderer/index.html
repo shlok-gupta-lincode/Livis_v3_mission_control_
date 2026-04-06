@@ -51,6 +51,11 @@
           <span>AWAITING LICENSE</span>
         </div>
       </div>
+      <div class="livis-header-right">
+        <button class="header-notification-btn btn-language-toggle" id="btn-lang-activation" title="Language">
+          <i class="bi bi-translate"></i>
+        </button>
+      </div>
 
 
     </header>
@@ -287,6 +292,9 @@
             <span id="header-user-role">Shift 1</span>
           </div>
         </div> -->
+        <button class="header-notification-btn btn-language-toggle" id="btn-lang-main" title="Language">
+          <i class="bi bi-translate"></i>
+        </button>
         <button class="header-notification-btn" id="btn-notification" title="Notifications">
           <i class="bi bi-bell"></i>
           <span id="update-dot"
@@ -652,6 +660,32 @@
     </div>
   </div>
 
+  <!-- Language Modal -->
+  <div class="modal fade" id="languageModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="bi bi-translate text-blue me-2"></i>Choose system language</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="language-select" class="form-label text-slate-500" style="font-size:12px;">Language</label>
+            <select id="language-select" class="form-select">
+              <option value="en">English</option>
+              <option value="gr">German</option>
+              <option value="fr">French</option>
+            </select>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+            <button class="btn-ghost" id="btn-language-cancel">Cancel</button>
+            <button class="btn-primary-glow" id="btn-language-apply">Continue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Delete Warning Modal -->
   <div class="modal fade" id="deleteWarnModal" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
@@ -746,6 +780,7 @@
   <!-- ── Scripts ── -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/systemPulse.js"></script>
   <script src="js/router.js"></script>
   <script src="modules/activation/activation.js"></script>

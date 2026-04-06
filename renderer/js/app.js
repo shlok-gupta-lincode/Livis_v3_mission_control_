@@ -17,6 +17,8 @@ const App = {
   intervals: {},
 
   async boot() {
+    if (window.I18n) await I18n.init();
+
     // Try to connect to daemon and guard
     let guardOk = false;
     try {
@@ -212,5 +214,18 @@ const App = {
 
 // ── Bootstrap ──
 document.addEventListener('DOMContentLoaded', () => App.boot());
+
+document.addEventListener('i18n:changed', () => {
+  if (window.App?.isActivated) {
+    App.renderAll();
+  } else if (window.Activation) {
+    if (Activation.activeSession) {
+      const lines = Activation.activeSession.lines || [];
+      const unused = Activation.activeSession.unused_licenses || [];
+      Activation.showResumeBanner(Activation.activeSession, lines, unused);
+    }
+    if (Activation.hardware) Activation.renderHardware(Activation.hardware);
+  }
+});
 
 window.App = App;
